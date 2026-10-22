@@ -1,0 +1,23 @@
+# macOS
+.DS_Store
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+
+# 评测运行产物（每次 run 生成于 reports/{run_id}/，不入库；数据集在 eval/datasets/ 正常入库）
+edge-harness-poc/eval/reports/
+
+# 模型权重与转换产物（脚本入库，产物体积大不入库）
+edge-harness-poc/models/weights/
+edge-harness-poc/models/mnn/
+*.gguf
+*.safetensors
+
+# 本地环境
+.env
+.idea/
+.vscode/

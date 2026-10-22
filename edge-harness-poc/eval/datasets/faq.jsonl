@@ -1,0 +1,91 @@
+{"id": "faq_000", "subset": "faq", "split": "test", "text": "单笔上限能调吗", "meta": {"gold_intent": "quota_consult", "info_points": ["I2"]}}
+{"id": "faq_001", "subset": "faq", "split": "test", "text": "房贷利率多少", "meta": {"gold_intent": "rate_consult", "info_points": ["I4"]}}
+{"id": "faq_002", "subset": "faq", "split": "test", "text": "电子回单在哪开", "meta": {"gold_intent": "app_usage_guide", "info_points": ["I3"]}}
+{"id": "faq_003", "subset": "faq", "split": "test", "text": "现金管理类赎回快吗", "meta": {"gold_intent": "wealth_product_intro", "info_points": ["I4"]}}
+{"id": "faq_004", "subset": "faq", "split": "test", "text": "怀疑被骗了打什么电话", "meta": {"gold_intent": "security_tips", "info_points": ["I4"]}}
+{"id": "faq_005", "subset": "faq", "split": "test", "text": "客服会要验证码吗", "meta": {"gold_intent": "security_tips", "info_points": ["I1", "I2"]}}
+{"id": "faq_006", "subset": "faq", "split": "test", "text": "卡密码忘了去哪弄", "meta": {"gold_intent": "password_reset_guide", "info_points": ["I2"]}}
+{"id": "faq_007", "subset": "faq", "split": "test", "text": "短信链接能点吗", "meta": {"gold_intent": "security_tips", "info_points": ["I3"]}}
+{"id": "faq_008", "subset": "faq", "split": "test", "text": "活期随时能取吗", "meta": {"gold_intent": "deposit_product_intro", "info_points": ["I1"]}}
+{"id": "faq_009", "subset": "faq", "split": "test", "text": "贷款额度怎么定", "meta": {"gold_intent": "loan_condition_consult", "info_points": ["I4"]}}
+{"id": "faq_010", "subset": "faq", "split": "test", "text": "卡丢了怎么办", "meta": {"gold_intent": "loss_report_guide", "info_points": ["I1", "I2"]}}
+{"id": "faq_011", "subset": "faq", "split": "test", "text": "零钱放哪合适", "meta": {"gold_intent": "deposit_product_intro", "info_points": ["I4"]}}
+{"id": "faq_012", "subset": "faq", "split": "test", "text": "美元汇率多少", "meta": {"gold_intent": "exchange_rate_consult", "info_points": ["I1", "I2"]}}
+{"id": "faq_013", "subset": "faq", "split": "test", "text": "丢卡第一步做什么", "meta": {"gold_intent": "loss_report_guide", "info_points": ["I1"]}}
+{"id": "faq_014", "subset": "faq", "split": "test", "text": "动账短信怎么开", "meta": {"gold_intent": "sms_notice_guide", "info_points": ["I1"]}}
+{"id": "faq_015", "subset": "faq", "split": "test", "text": "定期有几种存法", "meta": {"gold_intent": "deposit_product_intro", "info_points": ["I2"]}}
+{"id": "faq_016", "subset": "faq", "split": "test", "text": "一天最多转多少", "meta": {"gold_intent": "quota_consult", "info_points": ["I1"]}}
+{"id": "faq_017", "subset": "faq", "split": "test", "text": "改密码收费吗", "meta": {"gold_intent": "password_reset_guide", "info_points": ["I4"]}}
+{"id": "faq_018", "subset": "faq", "split": "test", "text": "周六开门吗", "meta": {"gold_intent": "branch_hours", "info_points": ["I2", "I4"]}}
+{"id": "faq_019", "subset": "faq", "split": "test", "text": "跨行1万块要多少手续费", "meta": {"gold_intent": "fee_consult", "info_points": ["I3"]}}
+{"id": "faq_020", "subset": "faq", "split": "test", "text": "网点几点下班", "meta": {"gold_intent": "branch_hours", "info_points": ["I2"]}}
+{"id": "faq_021", "subset": "faq", "split": "test", "text": "周日能办卡吗", "meta": {"gold_intent": "branch_hours", "info_points": ["I2", "I4"]}}
+{"id": "faq_022", "subset": "faq", "split": "test", "text": "存款有保险吗", "meta": {"gold_intent": "deposit_product_intro", "info_points": ["I5"]}}
+{"id": "faq_023", "subset": "faq", "split": "test", "text": "ATM取钱免费吗", "meta": {"gold_intent": "fee_consult", "info_points": ["I4"]}}
+{"id": "faq_024", "subset": "faq", "split": "test", "text": "补卡要带什么", "meta": {"gold_intent": "loss_report_guide", "info_points": ["I3"]}}
+{"id": "faq_025", "subset": "faq", "split": "test", "text": "大额存单利息高吗", "meta": {"gold_intent": "rate_consult", "info_points": ["I3"]}}
+{"id": "faq_026", "subset": "faq", "split": "test", "text": "贷款要什么条件", "meta": {"gold_intent": "loan_condition_consult", "info_points": ["I1"]}}
+{"id": "faq_027", "subset": "faq", "split": "test", "text": "理财都有哪些种类", "meta": {"gold_intent": "wealth_product_intro", "info_points": ["I4"]}}
+{"id": "faq_028", "subset": "faq", "split": "test", "text": "提现手续费多少", "meta": {"gold_intent": "fee_consult", "info_points": ["I4"]}}
+{"id": "faq_029", "subset": "faq", "split": "test", "text": "转账额度分几档", "meta": {"gold_intent": "quota_consult", "info_points": ["I3"]}}
+{"id": "faq_030", "subset": "faq", "split": "test", "text": "没做测评能买理财吗", "meta": {"gold_intent": "wealth_product_intro", "info_points": ["I3"]}}
+{"id": "faq_031", "subset": "faq", "split": "test", "text": "在哪看我的限额", "meta": {"gold_intent": "quota_consult", "info_points": ["I4"]}}
+{"id": "faq_032", "subset": "faq", "split": "test", "text": "晚上有人工吗", "meta": {"gold_intent": "service_channel_consult", "info_points": ["I2"]}}
+{"id": "faq_033", "subset": "faq", "split": "test", "text": "通知存款是啥", "meta": {"gold_intent": "deposit_product_intro", "info_points": ["I4"]}}
+{"id": "faq_034", "subset": "faq", "split": "test", "text": "取款密码想重置", "meta": {"gold_intent": "password_reset_guide", "info_points": ["I2"]}}
+{"id": "faq_035", "subset": "faq", "split": "test", "text": "电子版流水能发邮箱吗", "meta": {"gold_intent": "statement_consult", "info_points": ["I2"]}}
+{"id": "faq_036", "subset": "faq", "split": "test", "text": "限额怎么提高", "meta": {"gold_intent": "quota_consult", "info_points": ["I2"]}}
+{"id": "faq_037", "subset": "faq", "split": "test", "text": "结汇怎么办", "meta": {"gold_intent": "exchange_rate_consult", "info_points": ["I4"]}}
+{"id": "faq_038", "subset": "faq", "split": "test", "text": "大额存单起存多少", "meta": {"gold_intent": "deposit_product_intro", "info_points": ["I3"]}}
+{"id": "faq_039", "subset": "faq", "split": "test", "text": "手机银行密码怎么改", "meta": {"gold_intent": "password_reset_guide", "info_points": ["I1"]}}
+{"id": "faq_040", "subset": "faq", "split": "test", "text": "挂失后卡里的钱安全吗", "meta": {"gold_intent": "loss_report_guide", "info_points": ["I2"]}}
+{"id": "faq_041", "subset": "faq", "split": "test", "text": "欧元牌价哪儿看", "meta": {"gold_intent": "exchange_rate_consult", "info_points": ["I2"]}}
+{"id": "faq_042", "subset": "faq", "split": "test", "text": "App上能加别的卡吗", "meta": {"gold_intent": "app_usage_guide", "info_points": ["I2"]}}
+{"id": "faq_043", "subset": "faq", "split": "test", "text": "打印流水收费吗", "meta": {"gold_intent": "statement_consult", "info_points": ["I4"]}}
+{"id": "faq_044", "subset": "faq", "split": "test", "text": "客服电话多少", "meta": {"gold_intent": "service_channel_consult", "info_points": ["I3"]}}
+{"id": "faq_045", "subset": "faq", "split": "test", "text": "自助注册手机银行行吗", "meta": {"gold_intent": "app_usage_guide", "info_points": ["I1"]}}
+{"id": "faq_046", "subset": "faq", "split": "test", "text": "跨行转账收手续费吗", "meta": {"gold_intent": "fee_consult", "info_points": ["I2", "I3"]}}
+{"id": "faq_047", "subset": "faq", "split": "test", "text": "登录密码忘了", "meta": {"gold_intent": "password_reset_guide", "info_points": ["I1"]}}
+{"id": "faq_048", "subset": "faq", "split": "test", "text": "App通知收费吗", "meta": {"gold_intent": "sms_notice_guide", "info_points": ["I2"]}}
+{"id": "faq_049", "subset": "faq", "split": "test", "text": "转账功能在哪里", "meta": {"gold_intent": "app_usage_guide", "info_points": ["I4"]}}
+{"id": "faq_050", "subset": "faq", "split": "test", "text": "换汇额度是多少", "meta": {"gold_intent": "exchange_rate_consult", "info_points": ["I3"]}}
+{"id": "faq_051", "subset": "faq", "split": "test", "text": "密码输错被锁了", "meta": {"gold_intent": "password_reset_guide", "info_points": ["I3"]}}
+{"id": "faq_052", "subset": "faq", "split": "test", "text": "短信提醒要钱吗", "meta": {"gold_intent": "sms_notice_guide", "info_points": ["I1"]}}
+{"id": "faq_053", "subset": "faq", "split": "test", "text": "第一次买理财要注意什么", "meta": {"gold_intent": "wealth_product_intro", "info_points": ["I5", "I2"]}}
+{"id": "faq_054", "subset": "faq", "split": "test", "text": "手机银行怎么开通", "meta": {"gold_intent": "app_usage_guide", "info_points": ["I1"]}}
+{"id": "faq_055", "subset": "faq", "split": "test", "text": "存折丢了咋办", "meta": {"gold_intent": "loss_report_guide", "info_points": ["I4"]}}
+{"id": "faq_056", "subset": "faq", "split": "test", "text": "办签证用的流水怎么弄", "meta": {"gold_intent": "statement_consult", "info_points": ["I2", "I3"]}}
+{"id": "faq_057", "subset": "faq", "split": "test", "text": "口头挂失怎么办理", "meta": {"gold_intent": "loss_report_guide", "info_points": ["I1"]}}
+{"id": "faq_058", "subset": "faq", "split": "test", "text": "R2是什么风险", "meta": {"gold_intent": "wealth_product_intro", "info_points": ["I1"]}}
+{"id": "faq_059", "subset": "faq", "split": "test", "text": "流水怎么打", "meta": {"gold_intent": "statement_consult", "info_points": ["I1", "I2"]}}
+{"id": "faq_060", "subset": "faq", "split": "test", "text": "怎么转人工", "meta": {"gold_intent": "service_channel_consult", "info_points": ["I1", "I2"]}}
+{"id": "faq_061", "subset": "faq", "split": "test", "text": "能换多少美元", "meta": {"gold_intent": "exchange_rate_consult", "info_points": ["I3"]}}
+{"id": "faq_062", "subset": "faq", "split": "test", "text": "办房贷需要哪些材料", "meta": {"gold_intent": "loan_condition_consult", "info_points": ["I3"]}}
+{"id": "faq_063", "subset": "faq", "split": "test", "text": "怎么防止电信诈骗", "meta": {"gold_intent": "security_tips", "info_points": ["I3", "I2"]}}
+{"id": "faq_064", "subset": "faq", "split": "test", "text": "转账什么时候要收费", "meta": {"gold_intent": "fee_consult", "info_points": ["I3"]}}
+{"id": "faq_065", "subset": "faq", "split": "test", "text": "活期利息多少", "meta": {"gold_intent": "rate_consult", "info_points": ["I1"]}}
+{"id": "faq_066", "subset": "faq", "split": "test", "text": "一年定期利率多少", "meta": {"gold_intent": "rate_consult", "info_points": ["I2"]}}
+{"id": "faq_067", "subset": "faq", "split": "test", "text": "手机上转账要钱不", "meta": {"gold_intent": "fee_consult", "info_points": ["I1", "I2"]}}
+{"id": "faq_068", "subset": "faq", "split": "test", "text": "对公业务几点办", "meta": {"gold_intent": "branch_hours", "info_points": ["I1"]}}
+{"id": "faq_069", "subset": "faq", "split": "test", "text": "大额变动想收到通知", "meta": {"gold_intent": "sms_notice_guide", "info_points": ["I4"]}}
+{"id": "faq_070", "subset": "faq", "split": "test", "text": "理财会亏本吗", "meta": {"gold_intent": "wealth_product_intro", "info_points": ["I2"]}}
+{"id": "faq_071", "subset": "faq", "split": "test", "text": "手续费有没有优惠", "meta": {"gold_intent": "fee_consult", "info_points": ["I5"]}}
+{"id": "faq_072", "subset": "faq", "split": "test", "text": "盖章流水去哪开", "meta": {"gold_intent": "statement_consult", "info_points": ["I3"]}}
+{"id": "faq_073", "subset": "faq", "split": "test", "text": "五年定期利率", "meta": {"gold_intent": "rate_consult", "info_points": ["I2"]}}
+{"id": "faq_074", "subset": "faq", "split": "test", "text": "汇率天天变吗", "meta": {"gold_intent": "exchange_rate_consult", "info_points": ["I1"]}}
+{"id": "faq_075", "subset": "faq", "split": "test", "text": "怎么绑银行卡", "meta": {"gold_intent": "app_usage_guide", "info_points": ["I2"]}}
+{"id": "faq_076", "subset": "faq", "split": "test", "text": "投诉往哪儿提", "meta": {"gold_intent": "service_channel_consult", "info_points": ["I4"]}}
+{"id": "faq_077", "subset": "faq", "split": "test", "text": "利率以后会变吗", "meta": {"gold_intent": "rate_consult", "info_points": ["I5"]}}
+{"id": "faq_078", "subset": "faq", "split": "test", "text": "手机丢了怎么保护银行账户", "meta": {"gold_intent": "security_tips", "info_points": ["I5"]}}
+{"id": "faq_079", "subset": "faq", "split": "test", "text": "花钱了怎么才有提示", "meta": {"gold_intent": "sms_notice_guide", "info_points": ["I2", "I1"]}}
+{"id": "faq_080", "subset": "faq", "split": "test", "text": "验证码能给别人吗", "meta": {"gold_intent": "security_tips", "info_points": ["I2"]}}
+{"id": "faq_081", "subset": "faq", "split": "test", "text": "收入证明要吗", "meta": {"gold_intent": "loan_condition_consult", "info_points": ["I2"]}}
+{"id": "faq_082", "subset": "faq", "split": "test", "text": "客服几点在线", "meta": {"gold_intent": "service_channel_consult", "info_points": ["I2"]}}
+{"id": "faq_083", "subset": "faq", "split": "test", "text": "节假日营业吗", "meta": {"gold_intent": "branch_hours", "info_points": ["I4"]}}
+{"id": "faq_084", "subset": "faq", "split": "test", "text": "中山路支行今天开吗", "meta": {"gold_intent": "branch_hours", "info_points": ["I3"]}}
+{"id": "faq_085", "subset": "faq", "split": "test", "text": "微信能收提醒吗", "meta": {"gold_intent": "sms_notice_guide", "info_points": ["I3"]}}
+{"id": "faq_086", "subset": "faq", "split": "test", "text": "贵宾限额不一样吗", "meta": {"gold_intent": "quota_consult", "info_points": ["I3"]}}
+{"id": "faq_087", "subset": "faq", "split": "test", "text": "智能客服全天都有吗", "meta": {"gold_intent": "service_channel_consult", "info_points": ["I1"]}}
+{"id": "faq_088", "subset": "faq", "split": "test", "text": "能不能先测个额度", "meta": {"gold_intent": "loan_condition_consult", "info_points": ["I5"]}}
+{"id": "faq_089", "subset": "faq", "split": "test", "text": "能查几年的明细", "meta": {"gold_intent": "statement_consult", "info_points": ["I1"]}}
+{"id": "faq_090", "subset": "faq", "split": "test", "text": "信用贷要担保吗", "meta": {"gold_intent": "loan_condition_consult", "info_points": ["I1"]}}

@@ -1,0 +1,252 @@
+# ============================================================
+# 意图注册表（单一事实源）v1.0-draft
+# ============================================================
+# 用途：① 渲染意图分类 prompt ② 测试集构造的标签体系 ③ pipeline 路由执行
+# 规模：30 类 = 15 faq + 6 tool + 9 cloud，另有 1 个 OOS 兜底类
+# ⚠️ 草案说明：意图体系按通用手机银行功能树拟定，W1 期间必须按行内 App
+#    实际功能树与客服高频问题清单修订，修订时保持三类配比大致不变。
+# 编辑规则（CI lint 强制）：
+#   - 每类必有 route ∈ {faq, tool, cloud}
+#   - route=faq 必有 knowledge；route=tool 必有 tool + slots；route=cloud 必有 reason
+#   - id 命名 snake_case，一旦用于测试集冻结后不可改名（只可增删并升版本）
+# ============================================================
+
+intents:
+
+  # ---------- FAQ 类（15）：本地知识卡作答 ----------
+
+  - id: fee_consult
+    name: 手续费咨询
+    desc: 咨询各类业务手续费（转账、跨行、提现等）
+    examples: ["跨行转账要手续费吗", "取钱扣不扣手续费", "转账手续费多少"]
+    route: faq
+    knowledge: kb/fee_consult.md
+
+  - id: rate_consult
+    name: 利率咨询
+    desc: 咨询存款利率、贷款利率
+    examples: ["现在定期利率多少", "一年存款利息多少", "房贷利率是多少"]
+    route: faq
+    knowledge: kb/rate_consult.md
+
+  - id: exchange_rate_consult
+    name: 外汇汇率咨询
+    desc: 咨询外币汇率水平
+    examples: ["美元汇率多少", "现在欧元汇率", "日元汇率咋样"]
+    route: faq
+    knowledge: kb/exchange_rate_consult.md
+
+  - id: branch_hours
+    name: 网点营业时间与地址咨询
+    desc: 咨询网点几点开门、在哪里（不含按城市检索网点，那走 find_branch 工具）
+    examples: ["你们银行几点开门", "周六营业吗", "网点一般几点下班"]
+    route: faq
+    knowledge: kb/branch_hours.md
+
+  - id: loss_report_guide
+    name: 挂失流程咨询
+    desc: 咨询银行卡/存折丢失后怎么办（流程说明，非执行挂失）
+    examples: ["卡丢了怎么办", "怎么挂失银行卡", "存折不见了咋弄"]
+    route: faq
+    knowledge: kb/loss_report_guide.md
+
+  - id: password_reset_guide
+    name: 密码重置流程咨询
+    desc: 咨询忘记密码后如何重置（流程说明，非执行修改）
+    examples: ["密码忘了咋办", "怎么改查询密码", "登录密码忘了"]
+    route: faq
+    knowledge: kb/password_reset_guide.md
+
+  - id: app_usage_guide
+    name: App 功能使用咨询
+    desc: 手机银行怎么开通、绑定、常用功能在哪里
+    examples: ["怎么开通手机银行", "在哪绑定银行卡", "电子回单在哪找"]
+    route: faq
+    knowledge: kb/app_usage_guide.md
+
+  - id: deposit_product_intro
+    name: 存款产品介绍
+    desc: 了解定期、活期、大额存单等产品基本情况
+    examples: ["有什么定期产品", "大额存单起存多少", "活期利息怎么算"]
+    route: faq
+    knowledge: kb/deposit_product_intro.md
+
+  - id: wealth_product_intro
+    name: 理财产品基础介绍
+    desc: 了解理财产品的种类、风险等级等通识（不含购买）
+    examples: ["理财产品有哪些", "什么是R2风险", "稳健型理财有啥"]
+    route: faq
+    knowledge: kb/wealth_product_intro.md
+
+  - id: loan_condition_consult
+    name: 贷款条件与材料咨询
+    desc: 咨询贷款申请条件、需要什么材料
+    examples: ["贷款需要什么条件", "房贷要准备哪些材料", "信用贷好申请吗"]
+    route: faq
+    knowledge: kb/loan_condition_consult.md
+
+  - id: quota_consult
+    name: 限额规则咨询
+    desc: 咨询转账/支付限额是多少、如何调整（规则说明；查当前值走 query_quota 工具）
+    examples: ["一天最多能转多少", "限额怎么提高", "单笔上限是多少"]
+    route: faq
+    knowledge: kb/quota_consult.md
+
+  - id: statement_consult
+    name: 流水与对账单咨询
+    desc: 咨询如何开流水、对账单
+    examples: ["流水怎么打", "对账单在哪开", "工资流水哪里弄"]
+    route: faq
+    knowledge: kb/statement_consult.md
+
+  - id: sms_notice_guide
+    name: 动账提醒设置咨询
+    desc: 咨询短信通知/动账提醒怎么开通
+    examples: ["怎么开通短信提醒", "动账提醒在哪设置", "余额变动短信怎么开"]
+    route: faq
+    knowledge: kb/sms_notice_guide.md
+
+  - id: security_tips
+    name: 安全用卡咨询
+    desc: 用卡安全、防诈骗常识咨询
+    examples: ["怎么防止电信诈骗", "银行卡安全要注意啥", "验证码能告诉别人吗"]
+    route: faq
+    knowledge: kb/security_tips.md
+
+  - id: service_channel_consult
+    name: 客服渠道与人工咨询
+    desc: 咨询怎么找人工客服、客服时间
+    examples: ["怎么转人工", "客服电话多少", "人工服务几点在线"]
+    route: faq
+    knowledge: kb/service_channel_consult.md
+
+  # ---------- TOOL 类（6）：本地 mock 工具演示 ----------
+
+  - id: query_balance
+    name: 查询余额
+    desc: 查本人账户/银行卡余额
+    examples: ["查一下余额", "卡里还有多少钱", "帮偶查哈子余额"]
+    route: tool
+    tool: get_balance
+    slots:
+      - {name: account, type: string, required: false,
+         ask: "请问查哪个账户？"}
+
+  - id: query_recent_transactions
+    name: 查询近期交易
+    desc: 查最近交易记录/收支明细
+    examples: ["最近花了哪些钱", "查下交易记录", "这个月支出多少"]
+    route: tool
+    tool: get_recent_transactions
+    slots:
+      - {name: days, type: integer, required: false,
+         ask: "查最近几天的？"}
+
+  - id: query_deposit_holding
+    name: 查询持有存款
+    desc: 查名下定期/活期存款持有情况
+    examples: ["我有几笔定期", "存款到期了没有", "查下我的定期"]
+    route: tool
+    tool: get_deposit_holding
+
+  - id: query_quota_value
+    name: 查询当前限额
+    desc: 查本人当前转账/支付限额值（区别于规则咨询 quota_consult）
+    examples: ["我现在限额多少", "查下我的转账额度", "我的单笔限额是多少"]
+    route: tool
+    tool: get_quota
+
+  - id: find_branch
+    name: 检索网点
+    desc: 按城市/位置找具体网点
+    examples: ["附近有什么网点", "XX市哪个网点离我近", "帮我找营业厅"]
+    route: tool
+    tool: find_branch
+    slots:
+      - {name: city, type: string, required: true,
+         ask: "请问您在哪个城市？"}
+
+  - id: calc_deposit_interest
+    name: 存款利息试算
+    desc: 按本金和期限试算利息
+    examples: ["10万存一年利息多少", "存5万三年能拿多少利息", "帮我算下利息"]
+    route: tool
+    tool: calc_interest
+    slots:
+      - {name: amount, type: number, required: true,
+         ask: "请问本金大约多少？"}
+      - {name: term, type: string, required: true,
+         ask: "存多久？比如一年、三年。"}
+
+  # ---------- CLOUD 类（9）：识别后转云/转人工，本地不执行 ----------
+
+  - id: transfer_out
+    name: 转账汇款
+    desc: 要求办理转账、汇款、付款
+    examples: ["给老婆转500", "帮我转账", "汇1000块钱给朋友"]
+    route: cloud
+    reason: 资金变动类，需云端风控与强认证，本地仅识别
+
+  - id: wealth_purchase
+    name: 理财/基金购买
+    desc: 要求购买理财、基金、贵金属等产品
+    examples: ["帮我买那个理财", "申购基金", "买点黄金"]
+    route: cloud
+    reason: 交易类，需风险测评匹配与合规校验
+
+  - id: loan_apply
+    name: 贷款申请
+    desc: 要求申请贷款、测额度
+    examples: ["我要申请房贷", "帮我测贷款额度", "信用贷申请"]
+    route: cloud
+    reason: 涉及征信查询与人工审核
+
+  - id: card_apply
+    name: 开卡申请
+    desc: 要求办新银行卡/信用卡
+    examples: ["办张信用卡", "开个二类户", "申请新卡"]
+    route: cloud
+    reason: 需身份核验与远程/柜面流程
+
+  - id: account_open
+    name: 开户咨询办理
+    desc: 要求开立账户
+    examples: ["开个账户", "我要开户", "办张储蓄卡"]
+    route: cloud
+    reason: 需身份核验，法定流程
+
+  - id: loss_report_execute
+    name: 挂失/冻结执行
+    desc: 要求立即挂失、冻结卡或账户（区别于流程咨询）
+    examples: ["快帮我挂失", "把卡冻结了", "马上停了我的卡"]
+    route: cloud
+    reason: 账户安全操作，需强认证
+
+  - id: password_change_execute
+    name: 密码修改执行
+    desc: 要求现在修改/重置密码（区别于流程咨询）
+    examples: ["帮我改密码", "重置一下取款密码", "把登录密码改了"]
+    route: cloud
+    reason: 敏感操作，需身份验证
+
+  - id: complaint_feedback
+    name: 投诉与建议
+    desc: 投诉、建议、表扬、举报
+    examples: ["我要投诉", "服务太差了", "有个建议要提"]
+    route: cloud
+    reason: 需人工跟进与工单系统
+
+  - id: complex_consult
+    name: 复杂个性化咨询
+    desc: 资产配置建议、多条件对比等超出本地知识范围的咨询
+    examples: ["我有30万怎么配置", "买理财还是存定期", "提前还房贷划算吗"]
+    route: cloud
+    reason: 个性化建议需云端大模型与投顾合规链路
+
+# ---------- OOS 兜底 ----------
+
+oos:
+  id: out_of_scope
+  name: 域外请求
+  desc: 不属于手机银行任何业务的输入（闲聊、无关请求）
+  route: cloud_fallback

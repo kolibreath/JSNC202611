@@ -1,0 +1,63 @@
+# ============================================================
+# 工具注册表 v1.0-draft（与 intents.yaml 中 route=tool 的类一一对应）
+# ============================================================
+# 说明：本验证阶段全部为 mock 桩工具，返回虚构数据并带 [MOCK] 前缀水印。
+# 生产迁移时仅替换 stub 指向真实接口桥接层，schema 与本表保持一致。
+# 格式：parameters 为 JSON Schema（渲染进 Hermes <tools> 段）。
+# ============================================================
+
+tools:
+
+  - name: get_balance
+    description: 查询本人指定账户的余额（mock，返回虚构数据）
+    parameters:
+      type: object
+      properties:
+        account:
+          {type: string, description: 账户名或卡号尾号，用户未说则不传}
+      required: []
+    stub: mock_get_balance
+
+  - name: get_recent_transactions
+    description: 查询本人最近 N 天的交易记录（mock）
+    parameters:
+      type: object
+      properties:
+        days:
+          {type: integer, description: 查询最近几天，默认 7}
+      required: []
+    stub: mock_get_recent_transactions
+
+  - name: get_deposit_holding
+    description: 查询本人名下定期/活期存款持有情况（mock）
+    parameters: {type: object, properties: {}, required: []}
+    stub: mock_get_deposit_holding
+
+  - name: get_quota
+    description: 查询本人当前转账/支付限额（mock）
+    parameters: {type: object, properties: {}, required: []}
+    stub: mock_get_quota
+
+  - name: find_branch
+    description: 按城市检索营业网点（mock，返回虚构网点）
+    parameters:
+      type: object
+      properties:
+        city: {type: string, description: 城市名}
+      required: [city]
+    stub: mock_find_branch
+
+  - name: calc_interest
+    description: 按本金与期限试算存款利息（mock，固定示例利率）
+    parameters:
+      type: object
+      properties:
+        amount: {type: number, description: 本金（元）}
+        term: {type: string, description: 期限，如 一年/三年}
+      required: [amount, term]
+    stub: mock_calc_interest
+
+# 安全规则（代码强制，不依赖模型自觉）：
+# 1. 白名单 = 本文件注册的工具集合；模型输出任何白名单外的工具调用 → 拒绝并记录（对应对测试集 C 类注入 case）
+# 2. 桩返回一律带 [MOCK] 前缀，演示物料不得去除水印
+# 3. 工具循环上限：单次用户请求最多 2 轮工具调用（含一次参数纠错重试）

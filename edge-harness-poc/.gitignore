@@ -1,0 +1,21 @@
+# 模型与转换产物
+models/**/*.safetensors
+models/**/*.gguf
+models/**/*.mnn
+models/weights/
+models/cache/
+
+# 评测产物
+eval/reports/*
+!eval/reports/.gitkeep
+eval/datasets/raw/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+.DS_Store
+
+# 设备侧临时文件
+*.log
+tmp/

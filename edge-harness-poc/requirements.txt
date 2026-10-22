@@ -1,0 +1,6 @@
+# Python 依赖（PC 端评测中枢用；设备端无需 Python）
+pyyaml>=6.0
+jinja2>=3.1
+# 以下仅 models/verify_tokenizer.py（tokenizer 对齐校验）需要：
+# transformers>=4.51
+# torch
