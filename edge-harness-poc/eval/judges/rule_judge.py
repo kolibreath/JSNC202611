@@ -27,12 +27,16 @@ def prf(tp: int, fp: int, fn: int) -> tuple[float, float, float]:
 
 def judge_intent(run_dir: Path) -> dict:
     rows = [json.loads(l) for l in (run_dir / "raw.jsonl").open(encoding="utf-8")]
+    n_all = len(rows)
     gold = [r["meta"].get("gold_intent") for r in rows]
     pred = [r["output"].get("pred_intent") or "out_of_scope"
             if "__error__" not in r["output"] else "__error__" for r in rows]
+    confs = [r["output"].get("confidence")
+             if "__error__" not in r["output"] else None for r in rows]
     n_err = sum(1 for p in pred if p == "__error__")
     rows = [r for r, p in zip(rows, pred) if p != "__error__"]
     gold = [g for g, p in zip(gold, pred) if p != "__error__"]
+    confs = [c for c, p in zip(confs, pred) if p != "__error__"]
     pred = [p for p in pred if p != "__error__"]
 
     classes = sorted(set(gold) | set(pred))
@@ -44,7 +48,10 @@ def judge_intent(run_dir: Path) -> dict:
             stats[p]["fp"] += 1
             stats[g]["fn"] += 1
 
-    acc = sum(1 for g, p in zip(gold, pred) if g == p) / len(rows)
+    n_correct = sum(1 for g, p in zip(gold, pred) if g == p)
+    acc = n_correct / len(pred) if pred else 0.0
+    # 双口径（O7）：错误行"剔除"为主口径，"计为错"用于跨轮次硬可比
+    acc_err_as_wrong = n_correct / n_all if n_all else 0.0
     per_class = {c: {"precision": prf(s["tp"], s["fp"], s["fn"])[0],
                      "recall": prf(s["tp"], s["fp"], s["fn"])[1],
                      "f1": prf(s["tp"], s["fp"], s["fn"])[2],
@@ -60,14 +67,30 @@ def judge_intent(run_dir: Path) -> dict:
     false_reject = sum(1 for i in in_gold if pred[i] == "out_of_scope")
     fr_rate = false_reject / len(in_gold) if in_gold else None
 
+    # 置信度阈值扫描（O7）：模拟"conf<t → 保守拒识为 out_of_scope"的工作点曲线
+    sweep = []
+    for t in [0.40, 0.45, 0.50, 0.55, 0.60, 0.65, 0.70]:
+        pred_t = [p if (c is not None and float(c) >= t) else "out_of_scope"
+                  for p, c in zip(pred, confs)]
+        acc_t = sum(1 for g, p in zip(gold, pred_t) if g == p) / len(pred_t) if pred_t else 0.0
+        oos_r = (sum(1 for i in oos_gold if pred_t[i] == "out_of_scope")
+                 / len(oos_gold) if oos_gold else None)
+        fr = (sum(1 for i in in_gold if pred_t[i] == "out_of_scope")
+              / len(in_gold) if in_gold else None)
+        sweep.append({"conf_min": t, "accuracy": round(acc_t, 4),
+                      "oos_reject": round(oos_r, 4) if oos_r is not None else None,
+                      "false_reject": round(fr, 4) if fr is not None else None})
+
     worst = min((c for c, v in per_class.items() if v["support"] > 0),
                 key=lambda c: per_class[c]["recall"], default=None)
     return {
-        "n": len(rows), "n_error_rows": n_err,
-        "accuracy": acc, "macro_f1": macro_f1,
+        "n": len(pred), "n_error_rows": n_err,
+        "accuracy": acc, "accuracy_err_as_wrong": round(acc_err_as_wrong, 4),
+        "macro_f1": macro_f1,
         "per_class": per_class,
         "oos_reject_rate": oos_rate, "false_reject_rate": fr_rate,
         "worst_recall_class": worst,
+        "conf_threshold_sweep": sweep,
         "threshold_check": {
             "macro_f1>=0.90": macro_f1 >= THRESHOLDS["macro_f1"],
             "oos_reject>=0.85": (oos_rate or 0) >= THRESHOLDS["oos_reject_rate"],
@@ -80,12 +103,20 @@ def judge_intent(run_dir: Path) -> dict:
 
 def to_markdown(rep: dict) -> str:
     lines = ["# Intent 评测报告", "",
-             f"- n={rep['n']}  accuracy={rep['accuracy']:.4f}  macro_F1={rep['macro_f1']:.4f}",
+             f"- n={rep['n']}（错误行 {rep['n_error_rows']}）  "
+             f"accuracy={rep['accuracy']:.4f}（错误行计为错口径 {rep['accuracy_err_as_wrong']:.4f}）  "
+             f"macro_F1={rep['macro_f1']:.4f}",
              f"- OOS 拒识率={rep['oos_reject_rate']}  误拒率={rep['false_reject_rate']}",
              f"- 最差召回类：{rep['worst_recall_class']}", "",
              "| intent | P | R | F1 | support |", "|---|---|---|---|---|"]
     for c, v in sorted(rep["per_class"].items(), key=lambda kv: kv[1]["recall"]):
         lines.append(f"| {c} | {v['precision']:.3f} | {v['recall']:.3f} | {v['f1']:.3f} | {v['support']} |")
+    if rep.get("conf_threshold_sweep"):
+        lines += ["", "## 置信度阈值扫描（conf<t → 拒识为 out_of_scope）", "",
+                  "| conf_min | accuracy | OOS拒识 | 误拒 |", "|---|---|---|---|"]
+        for s in rep["conf_threshold_sweep"]:
+            lines.append(f"| {s['conf_min']:.2f} | {s['accuracy']:.4f} | "
+                         f"{s['oos_reject']} | {s['false_reject']} |")
     lines += ["", f"阈值判定：{json.dumps(rep['threshold_check'], ensure_ascii=False)}"]
     return "\n".join(lines) + "\n"
 

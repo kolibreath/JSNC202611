@@ -16,6 +16,7 @@ from __future__ import annotations
 
 import argparse
 import datetime as dt
+import hashlib
 import json
 import sys
 from pathlib import Path
@@ -27,6 +28,15 @@ from harness.pipeline import Harness, extract_json          # noqa: E402
 
 DATASETS = ROOT / "eval" / "datasets"
 REPORTS = ROOT / "eval" / "reports"
+REGISTRY = ROOT / "registry"
+
+
+def _dir_sha(paths) -> str:
+    """注册表/模板内容哈希：轮次间可比性由哈希保证，不靠人工核对（O7）。"""
+    h = hashlib.sha256()
+    for p in sorted(paths):
+        h.update(p.read_bytes())
+    return h.hexdigest()[:12]
 
 
 def make_adapter(backend: str, model: str, device: str, endpoint: str):
@@ -46,28 +56,30 @@ def make_adapter(backend: str, model: str, device: str, endpoint: str):
 # ---------- 子集驱动 ----------
 
 def drive_intent(h: Harness, rec: dict) -> dict:
-    obj, trace = h.classify(rec["text"])
+    obj, trace = h.classify_only(rec["text"])
     return {"pred_intent": obj.get("intent"), "confidence": obj.get("confidence"),
             "slots": obj.get("slots"), "ok_json": bool(obj),
             "raw_keys": list(obj.keys()) if obj else []}
 
 
 def drive_mask(h: Harness, rec: dict) -> dict:
-    m = h.mask(rec["text"])
+    m = h.mask_only(rec["text"])
     return {"pred_text": m.masked_text, "action": m.action,
             "pred_entities": m.entities, "fallback": m.fallback_reason}
 
 
 def drive_faq(h: Harness, rec: dict) -> dict:
     r = h.route(rec["text"])
-    return {"action": r.action, "intent": r.intent, "reply": r.reply}
+    return {"action": r.action, "intent": r.intent, "reply": r.reply,
+            "fallback_reason": r.fallback_reason}
 
 
 def drive_tool(h: Harness, rec: dict) -> dict:
     r = h.route(rec["text"])
     executed = [c for c in r.tool_calls if not (c.get("result") or {}).get("error")]
     return {"action": r.action, "intent": r.intent, "reply": r.reply,
-            "tool_calls": r.tool_calls, "executed_any": bool(executed)}
+            "tool_calls": r.tool_calls, "executed_any": bool(executed),
+            "fallback_reason": r.fallback_reason}
 
 
 DRIVERS = {"intent": drive_intent, "mask": drive_mask,
@@ -83,6 +95,10 @@ def main() -> None:
     ap.add_argument("--endpoint", default="http://127.0.0.1:8080/v1")
     ap.add_argument("--limit", type=int, default=None)
     ap.add_argument("--include-dev", action="store_true")
+    ap.add_argument("--tool-mode", default="hermes", choices=["hermes", "slots"],
+                    help="O2：slots=槽位填充式工具调用")
+    ap.add_argument("--pipeline", default="serial", choices=["serial", "merged"],
+                    help="O6：merged=脱敏+意图合并单次生成")
     a = ap.parse_args()
 
     ds = DATASETS / f"{a.subset}.jsonl"
@@ -90,10 +106,12 @@ def main() -> None:
         sys.exit(f"dataset missing: {ds}（先运行 build/build_*.py）")
 
     adapter = make_adapter(a.backend, a.model, a.device, a.endpoint)
-    h = Harness(adapter)
+    h = Harness(adapter, tool_mode=a.tool_mode, pipeline_mode=a.pipeline)
 
     ts = dt.datetime.now().strftime("%Y%m%d_%H%M%S")
-    run_id = f"{ts}_{a.model}_{a.subset}_{a.device}_{a.backend}"
+    tags = [t for t, d in ((a.pipeline, "serial"), (a.tool_mode, "hermes")) if t != d]
+    run_id = f"{ts}_{a.model}_{a.subset}_{a.device}_{a.backend}" + \
+             ("_" + "-".join(tags) if tags else "")
     out_dir = REPORTS / run_id
     out_dir.mkdir(parents=True, exist_ok=True)
 
@@ -119,6 +137,9 @@ def main() -> None:
 
     meta = {"run_id": run_id, "subset": a.subset, "backend": a.backend,
             "model": a.model, "device": a.device,
+            "tool_mode": a.tool_mode, "pipeline": a.pipeline,
+            "registry_sha": _dir_sha([REGISTRY / "intents.yaml", REGISTRY / "tools.yaml"]),
+            "templates_sha": _dir_sha((ROOT / "harness" / "prompts").glob("*.j2")),
             "endpoint": a.endpoint if a.backend == "openai" else None,
             "n": n, "n_error": n_err,
             "created": dt.datetime.now().isoformat(timespec="seconds"),

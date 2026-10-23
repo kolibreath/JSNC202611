@@ -14,6 +14,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import subprocess
 import time
 from dataclasses import dataclass, field
@@ -120,29 +121,57 @@ class DryAdapter:
                 return prompt.rsplit(marker, 1)[1].strip()
         return ""
 
+    @staticmethod
+    def _mask_stub(ut: str) -> dict:
+        if any(k in ut for k in ("张三", "6222", "建设路")):
+            return {"text": "[姓名_1]的手机尾号卡 [卡号_1] 那笔钱转到[地址_1]",
+                    "entities": [
+                        {"type": "NAME", "original": "张三", "placeholder": "[姓名_1]"},
+                        {"type": "BANK_CARD", "original": "6222", "placeholder": "[卡号_1]"},
+                        {"type": "ADDR", "original": "建设路88号", "placeholder": "[地址_1]"}]}
+        return {"text": ut, "entities": []}
+
+    def _intent_stub(self, ut: str) -> dict:
+        out = next((o for keys, o in self._INTENT_RULES
+                    if any(k in ut for k in keys)), self._INTENT_DEFAULT)
+        return json.loads(out)
+
     def generate(self, prompt: str, max_new_tokens: int = 256) -> tuple[str, Timings]:
         now = time.time()
         t = Timings(t_submit=now, t_device_start=now, t_device_end=now + 0.1,
                     t_return=now + 0.1)
         ut = self._user_text(prompt)
-        if "占位符" in prompt:                                   # mask.j2
-            if any(k in ut for k in ("张三", "6222", "建设路")):
-                text = ('{"text":"[姓名_1]的手机尾号卡 [卡号_1] 那笔钱转到[地址_1]",'
-                        '"entities":[{"type":"NAME","original":"张三","placeholder":"[姓名_1]"},'
-                        '{"type":"BANK_CARD","original":"6222","placeholder":"[卡号_1]"},'
-                        '{"type":"ADDR","original":"建设路88号","placeholder":"[地址_1]"}]}')
-            else:
-                text = '{"text":"' + ut + '","entities":[]}'
-        elif "意图清单" in prompt:                               # intent.j2
-            text = next((out for keys, out in self._INTENT_RULES
-                         if any(k in ut for k in keys)), self._INTENT_DEFAULT)
-        elif "<tool>" in prompt:                                 # tool_call.j2
+        if "预处理模块" in prompt:                             # merged.j2（O6）
+            obj = {**self._mask_stub(ut), **self._intent_stub(ut)}
+            text = json.dumps(obj, ensure_ascii=False)
+        elif "占位符" in prompt:                               # mask.j2
+            text = json.dumps(self._mask_stub(ut), ensure_ascii=False)
+        elif "意图清单" in prompt:                             # intent.j2
+            text = json.dumps(self._intent_stub(ut), ensure_ascii=False)
+        elif "参数提取模块" in prompt:                         # tool_fill.j2（O2）
+            names = re.findall(r"^- (\w+)：", prompt, re.M)
+            vals = {n: None for n in names}
+            m = re.search(r"(\d+(?:\.\d+)?)\s*万", ut)
+            if m and "amount" in vals:
+                vals["amount"] = float(m.group(1)) * 10000
+            elif (m := re.search(r"\d+(?:\.\d+)?", ut)):
+                for n in ("amount", "days"):
+                    if n in vals and vals[n] is None:
+                        vals[n] = (float(m.group()) if n == "amount"
+                                   else int(float(m.group())))
+                        break
+            for kw in ("半年", "一年", "三年", "五年"):
+                if kw in ut and "term" in vals:
+                    vals["term"] = kw
+            text = json.dumps(vals, ensure_ascii=False)
+        elif "<tool>" in prompt:                               # tool_call.j2
             text = '<tool_call>{"name":"get_balance","arguments":{}}</tool_call>'
-        elif "向用户播报" in prompt:                              # 工具结果总结
+        elif "向用户播报" in prompt:                            # 工具结果总结
             text = "[MOCK] 您的默认账户余额为 5,234.10 元。"
-        elif "资料" in prompt:                                   # faq.j2
-            text = "[MOCK] 手机银行行内转账手续费为 0 元（占位示例，以行内公示为准）。"
-        else:                                                    # 其他（smoke 等）
+        elif "资料" in prompt:                                 # faq.j2（O3 输出契约）
+            text = ('{"hit": true, "answer": "[MOCK] 手机银行行内转账手续费为 0 元'
+                    '（占位示例，以行内公示为准）。"}')
+        else:                                                  # 其他（smoke 等）
             text = "[MOCK] OK"
         return text, t
 

@@ -40,16 +40,19 @@ def key_tokens(info_line: str) -> list[str]:
 
 
 def judge(run_dir: Path) -> dict:
+    from collections import Counter
     rows = [json.loads(l) for l in (run_dir / "raw.jsonl").open(encoding="utf-8")]
     n_point_hit = n_point_total = 0
     n_intent_ok = n_refuse = 0
     misses = []
+    fallback_dist = Counter()                       # O7：转云/兜底原因分布
     for r in rows:
         meta, out = r["meta"], r["output"]
         if out.get("intent") == meta["gold_intent"] and out.get("action") == "faq":
             n_intent_ok += 1
         if "转人工" in out.get("reply", ""):
             n_refuse += 1
+        fallback_dist[out.get("fallback_reason") or ""] += 1
         points = load_info_points(meta["gold_intent"])
         reply = out.get("reply", "")
         for pid in meta["info_points"]:
@@ -64,6 +67,7 @@ def judge(run_dir: Path) -> dict:
     rate = n_point_hit / n_point_total if n_point_total else None
     return {"n": len(rows), "intent_route_ok": n_intent_ok / len(rows) if rows else None,
             "info_point_hit": rate, "refuse_rate": n_refuse / len(rows) if rows else None,
+            "fallback_reason_dist": dict(fallback_dist),
             "miss_examples": misses,
             "threshold_check": {"info_hit>=0.80": (rate or 0) >= THRESHOLDS["info_hit"]}}
 

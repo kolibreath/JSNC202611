@@ -24,15 +24,15 @@ intents:
 
   - id: rate_consult
     name: 利率咨询
-    desc: 咨询存款利率、贷款利率
-    examples: ["现在定期利率多少", "一年存款利息多少", "房贷利率是多少"]
+    desc: 只问利率水平本身（存款/贷款利率是多少）；带具体本金金额要算利息的归 calc_deposit_interest
+    examples: ["现在定期利率多少", "一年存款利息多少", "房贷利率是多少", "利息怎么算的"]
     route: faq
     knowledge: kb/rate_consult.md
 
   - id: exchange_rate_consult
     name: 外汇汇率咨询
-    desc: 咨询外币汇率水平
-    examples: ["美元汇率多少", "现在欧元汇率", "日元汇率咋样"]
+    desc: 咨询外币汇率水平（含"XX币值不值钱/涨没涨"等行话）
+    examples: ["美元汇率多少", "现在欧元汇率", "日元最近值钱了吗"]
     route: faq
     knowledge: kb/exchange_rate_consult.md
 
@@ -45,7 +45,7 @@ intents:
 
   - id: loss_report_guide
     name: 挂失流程咨询
-    desc: 咨询银行卡/存折丢失后怎么办（流程说明，非执行挂失）
+    desc: 问挂失/冻结的流程怎么办（流程说明；要求立即办理的祈使句归 loss_report_execute）
     examples: ["卡丢了怎么办", "怎么挂失银行卡", "存折不见了咋弄"]
     route: faq
     knowledge: kb/loss_report_guide.md
@@ -66,15 +66,15 @@ intents:
 
   - id: deposit_product_intro
     name: 存款产品介绍
-    desc: 了解定期、活期、大额存单等产品基本情况
+    desc: 了解定期、活期、大额存单等存款类产品（保本付息类；理财/风险等级类问题归 wealth_product_intro）
     examples: ["有什么定期产品", "大额存单起存多少", "活期利息怎么算"]
     route: faq
     knowledge: kb/deposit_product_intro.md
 
   - id: wealth_product_intro
     name: 理财产品基础介绍
-    desc: 了解理财产品的种类、风险等级等通识（不含购买）
-    examples: ["理财产品有哪些", "什么是R2风险", "稳健型理财有啥"]
+    desc: 了解理财产品种类、风险等级等通识（净值型、R1-R5 等行话；不含购买，存款类问题归 deposit_product_intro）
+    examples: ["理财产品有哪些", "什么是R2风险", "稳健型理财有啥", "R2是什么意思"]
     route: faq
     knowledge: kb/wealth_product_intro.md
 
@@ -168,8 +168,8 @@ intents:
 
   - id: calc_deposit_interest
     name: 存款利息试算
-    desc: 按本金和期限试算利息
-    examples: ["10万存一年利息多少", "存5万三年能拿多少利息", "帮我算下利息"]
+    desc: 带具体本金金额和期限，要求试算/计算利息（必含金额；只问利率归 rate_consult）
+    examples: ["10万存一年利息多少", "存5万三年能拿多少利息", "8万块存半年能得多少利息"]
     route: tool
     tool: calc_interest
     slots:
@@ -203,21 +203,21 @@ intents:
 
   - id: card_apply
     name: 开卡申请
-    desc: 要求办新银行卡/信用卡
-    examples: ["办张信用卡", "开个二类户", "申请新卡"]
+    desc: 要求办银行卡/信用卡等卡产品（提"办卡/信用卡/储蓄卡"；开立账户归 account_open）
+    examples: ["办张信用卡", "申请新卡", "我想办一张储蓄卡"]
     route: cloud
     reason: 需身份核验与远程/柜面流程
 
   - id: account_open
     name: 开户咨询办理
-    desc: 要求开立账户
-    examples: ["开个账户", "我要开户", "办张储蓄卡"]
+    desc: 要求开立账户/开户（提"开户/新账户/二类户"；办卡产品归 card_apply）
+    examples: ["开个账户", "我要开户", "开个二类户"]
     route: cloud
     reason: 需身份核验，法定流程
 
   - id: loss_report_execute
     name: 挂失/冻结执行
-    desc: 要求立即挂失、冻结卡或账户（区别于流程咨询）
+    desc: 要求立即挂失、冻结卡或账户（"快帮我/马上 + 挂失/冻结"等祈使句；问流程归 loss_report_guide）
     examples: ["快帮我挂失", "把卡冻结了", "马上停了我的卡"]
     route: cloud
     reason: 账户安全操作，需强认证
